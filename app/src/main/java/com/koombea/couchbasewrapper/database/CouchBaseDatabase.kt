@@ -114,10 +114,10 @@ class CouchBaseDatabase (
      * if CREATE_NEW_ALWAYS, documents with the same id will be created as new documents in the database
      */
     fun <T> save(document: CouchBaseDocument<T>, policy: CouchBaseSavePolicy = SAVE_AND_UPDATE) {
-        val savedDocument = database.getDocument(document.id)?.toMutable() ?: MutableDocument()
+        val savedDocument = database.getDocument(document.id)?.toMutable() ?: MutableDocument(document.id)
         val databaseDocument =
             if(policy == SAVE_AND_UPDATE) savedDocument
-            else MutableDocument()
+            else MutableDocument(document.id)
         try {
             val data: HashMap<String, Any> =
                 gson.fromJson(

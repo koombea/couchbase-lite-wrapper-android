@@ -32,6 +32,16 @@ class CouchBaseDatabaseTest {
     private val document4 = CouchBaseDocument(id = product4.id, attributes = product4)
     private val products = listOf(product1, product2, product3, product4)
     private val documents = listOf(document1, document2, document3, document4)
+    private val shoppingCart1 = ShoppingCart(id = "1", date = "05-05-2020", product = product1)
+    private val shoppingCart2 = ShoppingCart(id = "2", date = "15-06-2020", product = product2)
+    private val shoppingCart3 = ShoppingCart(id = "3", date = "25-07-2020", product = product3)
+    private val shoppingCart4 = ShoppingCart(id = "4", date = "05-08-2020", product = product4)
+    private val shoppingCartDocument1 = CouchBaseDocument(id = shoppingCart1.id, attributes = shoppingCart1)
+    private val shoppingCartDocument2 = CouchBaseDocument(id = shoppingCart2.id, attributes = shoppingCart2)
+    private val shoppingCartDocument3 = CouchBaseDocument(id = shoppingCart3.id, attributes = shoppingCart3)
+    private val shoppingCartDocument4 = CouchBaseDocument(id = shoppingCart4.id, attributes = shoppingCart4)
+    private val shoppingCarts = listOf(shoppingCart1, shoppingCart2, shoppingCart3, shoppingCart4)
+    private val shoppingCartDocuments = listOf(shoppingCartDocument1, shoppingCartDocument2, shoppingCartDocument3, shoppingCartDocument4)
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -50,6 +60,13 @@ class CouchBaseDatabaseTest {
         database.save(documents)
         val fetchAll = database.fetchAll(modelType = Product::class.java)
         assertEquals(products, fetchAll)
+    }
+
+    @Test
+    fun saveAndFetchAllWithNestedObject() = runBlockingTest {
+        database.save(shoppingCartDocuments)
+        val fetchAll = database.fetchAll(modelType = ShoppingCart::class.java)
+        assertEquals(shoppingCarts, fetchAll)
     }
 
     @Test
@@ -94,6 +111,56 @@ class CouchBaseDatabaseTest {
         expected.add(0, product)
         database.save(CouchBaseDocument(id = "1", attributes = product))
         val fetchAll = database.fetchAll(modelType = Product::class.java)
+        assertEquals(expected, fetchAll)
+    }
+
+    @Test
+    fun saveADocumentWithCreateAlwaysNewPolicy() = runBlockingTest {
+        database.save(documents)
+        val product = Product(id = "1", name = "new product", quantity = 999)
+        val expected = products.toMutableList()
+        expected.add(product)
+        database.save(CouchBaseDocument(id = "1", attributes = product), policy = CouchBaseSavePolicy.CREATE_NEW_ALWAYS)
+        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        assertEquals(expected, fetchAll)
+    }
+
+    @Test
+    fun deleteAllDocuments() = runBlockingTest {
+        database.save(documents)
+        database.deleteAll(modelType = Product::class.java)
+        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        assertEquals(0, fetchAll.size)
+    }
+
+    @Test
+    fun deleteAllWhereQuantityIsGreaterThan20() = runBlockingTest {
+        database.save(documents)
+        val whereExpression = Expression.property("attributes.quantity").greaterThan(Expression.intValue(20))
+        database.deleteAll(whereExpression = whereExpression, modelType = Product::class.java)
+        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val expected = products.filterNot { it.quantity > 20 }
+        assertEquals(expected, fetchAll)
+    }
+
+    @Test
+    fun deleteOnlyTheFirstDocument() = runBlockingTest {
+        database.save(documents)
+        database.delete(CouchBaseDocument(id = "1", attributes = product1))
+        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val expected = products.subList(1, products.size)
+        assertEquals(expected, fetchAll)
+    }
+
+    @Test
+    fun deleteTheFirstTwoDocuments() = runBlockingTest {
+        database.save(documents)
+        database.delete(listOf(
+            CouchBaseDocument(id = "1", attributes = product1),
+            CouchBaseDocument(id = "2", attributes = product2))
+        )
+        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val expected = products.subList(2, products.size)
         assertEquals(expected, fetchAll)
     }
 
