@@ -6,6 +6,8 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.couchbase.lite.Expression
 import com.couchbase.lite.Ordering
+import com.koombea.couchbasewrapper.Product
+import com.koombea.couchbasewrapper.ShoppingCart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
@@ -115,17 +117,6 @@ class CouchBaseDatabaseTest {
     }
 
     @Test
-    fun saveADocumentWithCreateAlwaysNewPolicy() = runBlockingTest {
-        database.save(documents)
-        val product = Product(id = "1", name = "new product", quantity = 999)
-        val expected = products.toMutableList()
-        expected.add(product)
-        database.save(CouchBaseDocument(id = "1", attributes = product), policy = CouchBaseSavePolicy.CREATE_NEW_ALWAYS)
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
-        assertEquals(expected, fetchAll)
-    }
-
-    @Test
     fun deleteAllDocuments() = runBlockingTest {
         database.save(documents)
         database.deleteAll(modelType = Product::class.java)
@@ -139,7 +130,7 @@ class CouchBaseDatabaseTest {
         val whereExpression = Expression.property("attributes.quantity").greaterThan(Expression.intValue(20))
         database.deleteAll(whereExpression = whereExpression, modelType = Product::class.java)
         val fetchAll = database.fetchAll(modelType = Product::class.java)
-        val expected = products.filterNot { it.quantity > 20 }
+        val expected = products.filterNot { it.quantity!! > 20 }
         assertEquals(expected, fetchAll)
     }
 

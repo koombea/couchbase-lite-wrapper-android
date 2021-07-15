@@ -9,24 +9,15 @@ import com.koombea.couchbasewrapper.database.CouchBaseSavePolicy.SAVE_AND_UPDATE
 import java.lang.Exception
 import java.util.*
 
+/**
+ * Couchbase Wrapper with basic CRUD
+ * The intended usage is to save only one type of object in each database instance
+ */
 class CouchBaseDatabase (
     private val context: Context,
     private val databaseName: String,
     private val configuration: CouchBaseDatabaseConfiguration? = null
 ) {
-
-//    private var configuration: CouchBaseDatabaseConfiguration
-//
-//    constructor(context: Context, databaseName: String) {
-//        this.context = context
-//        configuration = CouchBaseDatabaseConfiguration(databaseName = databaseName)
-//        setup()
-//    }
-//
-//    constructor(configuration: CouchBaseDatabaseConfiguration) {
-//        this.configuration = configuration
-//        setup()
-//    }
 
     private val gson: Gson by lazy { Gson() }
 
@@ -56,22 +47,6 @@ class CouchBaseDatabase (
             }
         }
     }
-
-//    private fun saveDocument(document: MutableDocument) =
-//        try {
-//            val data: HashMap<String, Any> =
-//                gson.fromJson(
-//                    gson.toJson(document),
-//                    object : TypeToken<HashMap<String, Any>>() {}.type
-//                )
-//            val mutableDocument = MutableDocument().apply {
-//                setString(PRIMARY_KEY, document.id)
-//                setValue(document.id, data)
-//            }
-//            database.save(mutableDocument)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
 
     private fun <T> fetchQuery(query: Query, modelType: Class<T>): List<T> {
         val results = mutableListOf<T>()
@@ -125,15 +100,12 @@ class CouchBaseDatabase (
                     object : TypeToken<HashMap<String, Any>>() {}.type
                 )
             databaseDocument.apply {
-                //setString(PRIMARY_KEY, document.id)
                 setValue(document.id, data)
             }
-            //database.save(databaseDocument)
             database.save(MutableDocument(document.id, data))
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        //saveDocument(databaseDocument)
     }
 
     /**
@@ -158,25 +130,6 @@ class CouchBaseDatabase (
      * @return list of generic object
      */
     fun <T> fetchAll(whereExpression: Expression? = null, orderedBy: Array<Ordering>? = null, modelType: Class<T>): List<T> {
-//        val fromQuery = QueryBuilder.select(SelectResult.all())
-//            .from(DataSource.database(database))
-//        var whereQuery: Where? = null
-//        if(whereExpression != null) {
-//            whereQuery = fromQuery.where(whereExpression)
-//        }
-//        if(orderedBy != null) {
-//            if(whereQuery != null) {
-//                whereQuery.orderBy(*orderedBy)
-//            } else {
-//                fromQuery.orderBy(*orderedBy)
-//            }
-//        }
-//        return if (whereQuery != null) {
-//            fetchQuery(whereQuery, modelType)
-//        } else {
-//            fetchQuery(fromQuery, modelType)
-//        }
-
         var query: Query = QueryBuilder.select(SelectResult.all())
             .from(DataSource.database(database))
         (query as From).let { fromQuery ->
@@ -275,8 +228,6 @@ class CouchBaseDatabase (
     }
 
     companion object {
-        private const val PRIMARY_KEY = "primary_key"
         private const val TAG = "DEBUG"
     }
-
 }

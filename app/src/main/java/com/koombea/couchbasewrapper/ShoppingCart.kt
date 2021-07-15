@@ -1,4 +1,6 @@
-package com.koombea.couchbasewrapper.database
+package com.koombea.couchbasewrapper
+
+import com.koombea.couchbasewrapper.Product
 
 data class ShoppingCart(
     val id: String,
