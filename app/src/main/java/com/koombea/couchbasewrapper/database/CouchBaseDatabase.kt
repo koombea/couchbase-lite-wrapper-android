@@ -1,11 +1,9 @@
 package com.koombea.couchbasewrapper.database
 
 import android.content.Context
-import android.util.Log
 import com.couchbase.lite.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.koombea.couchbasewrapper.database.CouchBaseSavePolicy.SAVE_AND_UPDATE
 import java.lang.Exception
 import java.util.*
 
@@ -85,14 +83,9 @@ class CouchBaseDatabase (
     /**
      * Save a document in the database
      * @param document document to be saved
-     * @param policy save policy, if SAVE_AND_UPDATE, documents with the same id will be overwritten
-     * if CREATE_NEW_ALWAYS, documents with the same id will be created as new documents in the database
      */
-    fun <T> save(document: CouchBaseDocument<T>, policy: CouchBaseSavePolicy = SAVE_AND_UPDATE) {
-        val savedDocument = database.getDocument(document.id)?.toMutable() ?: MutableDocument(document.id)
-        val databaseDocument =
-            if(policy == SAVE_AND_UPDATE) savedDocument
-            else MutableDocument(document.id)
+    fun <T> save(document: CouchBaseDocument<T>) {
+        val databaseDocument = database.getDocument(document.id)?.toMutable() ?: MutableDocument(document.id)
         try {
             val data: HashMap<String, Any> =
                 gson.fromJson(
@@ -111,13 +104,11 @@ class CouchBaseDatabase (
     /**
      * Save a list of documents in the database
      * @param documents list of documents to be saved
-     * @param policy save policy, if SAVE_AND_UPDATE, documents with the same id will be overwritten
-     * if CREATE_NEW_ALWAYS, documents with the same id will be created as new documents in the database
      */
-    fun <T> save(documents: List<CouchBaseDocument<T>>, policy: CouchBaseSavePolicy = SAVE_AND_UPDATE) {
+    fun <T> save(documents: List<CouchBaseDocument<T>>) {
         database.inBatch {
             documents.forEach { document ->
-                save(document, policy)
+                save(document)
             }
         }
     }
