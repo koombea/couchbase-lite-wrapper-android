@@ -10,6 +10,8 @@ import com.koombea.couchbasewrapper.Product
 import com.koombea.couchbasewrapper.ShoppingCart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
@@ -17,6 +19,7 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import org.junit.Rule
+import kotlin.coroutines.CoroutineContext
 
 @SmallTest
 @ExperimentalCoroutinesApi
@@ -45,6 +48,10 @@ class CouchBaseDatabaseTest {
     private val shoppingCarts = listOf(shoppingCart1, shoppingCart2, shoppingCart3, shoppingCart4)
     private val shoppingCartDocuments = listOf(shoppingCartDocument1, shoppingCartDocument2, shoppingCartDocument3, shoppingCartDocument4)
 
+    private val testDispatcher = TestCoroutineDispatcher()
+    private val testScope = TestCoroutineScope(testDispatcher)
+    private val networkContext: CoroutineContext = testDispatcher
+
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -60,21 +67,22 @@ class CouchBaseDatabaseTest {
     @Test
     fun saveAndFetchAll() = runBlockingTest {
         database.save(documents)
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val fetchAll = database.fetchAll<Product>()
         assertEquals(products, fetchAll)
     }
 
     @Test
     fun saveAndFetchAllWithNestedObject() = runBlockingTest {
         database.save(shoppingCartDocuments)
-        val fetchAll = database.fetchAll(modelType = ShoppingCart::class.java)
+        val fetchAll: List<ShoppingCart> = database.fetchAll()
         assertEquals(shoppingCarts, fetchAll)
     }
 
     @Test
     fun fetchOnlyOneObject() = runBlockingTest {
         database.save(documents)
-        val fetchOne = database.fetch(document = document1, modelType = Product::class.java).first()
+        //val fetchOne = database.fetch(document = document1, modelType = Product::class.java).first()
+        val fetchOne = database.find<Product>("1")
         assertEquals(product1, fetchOne)
     }
 
@@ -82,7 +90,7 @@ class CouchBaseDatabaseTest {
     fun fetchOnlyOneObjectWhereIdEqualsTwo() = runBlockingTest {
         database.save(documents)
         val whereExpression = Expression.property("attributes.id").equalTo(Expression.string("2"))
-        val fetchOne = database.fetchAll(whereExpression = whereExpression, modelType = Product::class.java).first()
+        val fetchOne: Product = database.fetchAll<Product>(whereExpression = whereExpression).first()
         assertEquals(product2, fetchOne)
     }
 
@@ -91,7 +99,7 @@ class CouchBaseDatabaseTest {
         database.save(documents)
         val productsOrderedDescendingByQuantity = listOf(product1, product3, product2, product4)
         val orderBy = arrayOf(Ordering.property("attributes.quantity").descending())
-        val fetchAll = database.fetchAll(orderedBy = orderBy, modelType = Product::class.java)
+        val fetchAll: List<Product> = database.fetchAll(orderedBy = orderBy)
         assertEquals(productsOrderedDescendingByQuantity, fetchAll)
     }
 
@@ -101,7 +109,7 @@ class CouchBaseDatabaseTest {
         val expected = listOf(product4, product3)
         val whereExpression = Expression.property("attributes.id").greaterThan(Expression.string("2"))
         val orderBy = arrayOf(Ordering.property("attributes.quantity").ascending())
-        val fetchAll = database.fetchAll(whereExpression = whereExpression, orderedBy = orderBy, modelType = Product::class.java)
+        val fetchAll: List<Product> = database.fetchAll(whereExpression = whereExpression, orderedBy = orderBy)
         assertEquals(expected, fetchAll)
     }
 
@@ -112,15 +120,15 @@ class CouchBaseDatabaseTest {
         val expected = products.subList(1, products.size).toMutableList()
         expected.add(0, product)
         database.save(CouchBaseDocument(id = "1", attributes = product))
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val fetchAll: List<Product> = database.fetchAll()
         assertEquals(expected, fetchAll)
     }
 
     @Test
     fun deleteAllDocuments() = runBlockingTest {
         database.save(documents)
-        database.deleteAll(modelType = Product::class.java)
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        database.deleteAll()
+        val fetchAll: List<Product> = database.fetchAll()
         assertEquals(0, fetchAll.size)
     }
 
@@ -128,8 +136,8 @@ class CouchBaseDatabaseTest {
     fun deleteAllWhereQuantityIsGreaterThan20() = runBlockingTest {
         database.save(documents)
         val whereExpression = Expression.property("attributes.quantity").greaterThan(Expression.intValue(20))
-        database.deleteAll(whereExpression = whereExpression, modelType = Product::class.java)
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        database.deleteAll(whereExpression = whereExpression)
+        val fetchAll: List<Product> = database.fetchAll()
         val expected = products.filterNot { it.quantity!! > 20 }
         assertEquals(expected, fetchAll)
     }
@@ -138,7 +146,7 @@ class CouchBaseDatabaseTest {
     fun deleteOnlyTheFirstDocument() = runBlockingTest {
         database.save(documents)
         database.delete(CouchBaseDocument(id = "1", attributes = product1))
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val fetchAll: List<Product> = database.fetchAll()
         val expected = products.subList(1, products.size)
         assertEquals(expected, fetchAll)
     }
@@ -150,7 +158,7 @@ class CouchBaseDatabaseTest {
             CouchBaseDocument(id = "1", attributes = product1),
             CouchBaseDocument(id = "2", attributes = product2))
         )
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val fetchAll: List<Product> = database.fetchAll()
         val expected = products.subList(2, products.size)
         assertEquals(expected, fetchAll)
     }

@@ -2,9 +2,7 @@ package com.koombea.couchbasewrapper
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
-import com.couchbase.lite.Expression
 import com.koombea.couchbasewrapper.database.CouchBaseDatabase
 import com.koombea.couchbasewrapper.database.CouchBaseDocument
 import com.koombea.couchbasewrapper.databinding.ActivityMainBinding
@@ -122,7 +120,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun printAllProducts() {
-        val fetchAll = productDatabase.fetchAll(modelType = Product::class.java)
+        val fetchAll: List<Product> = productDatabase.fetchAll()
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fetchAll)
         binding.productsListView.adapter = adapter
     }
