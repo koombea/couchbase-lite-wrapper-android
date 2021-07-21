@@ -140,17 +140,16 @@ class CouchBaseDatabase (
 
     /**
      * Fetch one document based on the id of the input document.
-     * @param document the document object which id will be taken to retrieve an object
+     * @param id id of the document to be retrieved
      * @param modelType type of the class saved in the database, this specify the returning type of the generic object
      * @return list of generic object with size 1 if the searched object was found, otherwise size 0
      */
-    fun <T> fetch(document: CouchBaseDocument<T>, modelType: Class<T>): List<T> {
-        val databaseDocument = database.getDocument(document.id)
-        val result = mutableListOf<T>()
+    fun <T> fetch(id: String, modelType: Class<T>): T? {
+        val databaseDocument = database.getDocument(id)
         if(databaseDocument != null) {
-            result.add(mapObjectToCouchBaseDocument(databaseDocument.toMap(), modelType).attributes)
+            return mapObjectToCouchBaseDocument(databaseDocument.toMap(), modelType).attributes
         }
-        return result
+        return null
     }
 
     /**
@@ -184,10 +183,10 @@ class CouchBaseDatabase (
 
     /**
      * Delete one document of the database
-     * @param document document to be deleted
+     * @param id id of the document to be deleted
      */
-    fun <T> delete(document: CouchBaseDocument<T>) {
-        val databaseDocument = database.getDocument(document.id) ?: return
+    fun delete(id: String) {
+        val databaseDocument = database.getDocument(id) ?: return
         try {
             database.delete(databaseDocument)
         } catch (e: Exception) {
@@ -203,7 +202,24 @@ class CouchBaseDatabase (
         try {
             database.inBatch {
                 documents.forEach { document ->
-                    delete(document)
+                    delete(document.id)
+                }
+            }
+        }catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * Delete a list of documents of the database
+     * @param idList list of ids of documents to be deleted
+     */
+    @JvmName("delete1")
+    fun delete(idList: List<String>) {
+        try {
+            database.inBatch {
+                idList.forEach { id ->
+                    delete(id)
                 }
             }
         }catch (e: Exception) {
