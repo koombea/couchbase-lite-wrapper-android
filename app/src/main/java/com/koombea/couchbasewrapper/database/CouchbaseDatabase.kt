@@ -11,10 +11,10 @@ import java.util.*
  * Couchbase Wrapper with basic CRUD
  * The intended usage is to save only one type of object in each database instance
  */
-class CouchBaseDatabase (
+class CouchbaseDatabase (
     private val context: Context,
     private val databaseName: String,
-    private val configuration: CouchBaseDatabaseConfiguration? = null
+    private val configuration: CouchbaseDatabaseConfiguration? = null
 ) {
 
     private val gson: Gson by lazy { Gson() }
@@ -61,19 +61,19 @@ class CouchBaseDatabase (
         return results
     }
 
-    private fun <T> mapObjectToCouchBaseDocument(document: Any, modelType: Class<T>): CouchBaseDocument<T> {
+    private fun <T> mapObjectToCouchBaseDocument(document: Any, modelType: Class<T>): CouchbaseDocument<T> {
         val type = when (modelType) {
-            Boolean::class.java -> object : TypeToken<CouchBaseDocument<Boolean>>() {}.type
-            Char::class.java -> object : TypeToken<CouchBaseDocument<Char>>() {}.type
-            Byte::class.java -> object : TypeToken<CouchBaseDocument<Byte>>() {}.type
-            Short::class.java -> object : TypeToken<CouchBaseDocument<Short>>() {}.type
-            Int::class.java -> object : TypeToken<CouchBaseDocument<Int>>() {}.type
-            Long::class.java -> object : TypeToken<CouchBaseDocument<Long>>() {}.type
-            Float::class.java -> object : TypeToken<CouchBaseDocument<Float>>() {}.type
-            Double::class.java -> object : TypeToken<CouchBaseDocument<Double>>() {}.type
-            Unit::class.java -> object : TypeToken<CouchBaseDocument<Unit>>() {}.type
-            Void::class.java -> object : TypeToken<CouchBaseDocument<Void>>() {}.type
-            else -> TypeToken.getParameterized(CouchBaseDocument::class.java, modelType).type
+            Boolean::class.java -> object : TypeToken<CouchbaseDocument<Boolean>>() {}.type
+            Char::class.java -> object : TypeToken<CouchbaseDocument<Char>>() {}.type
+            Byte::class.java -> object : TypeToken<CouchbaseDocument<Byte>>() {}.type
+            Short::class.java -> object : TypeToken<CouchbaseDocument<Short>>() {}.type
+            Int::class.java -> object : TypeToken<CouchbaseDocument<Int>>() {}.type
+            Long::class.java -> object : TypeToken<CouchbaseDocument<Long>>() {}.type
+            Float::class.java -> object : TypeToken<CouchbaseDocument<Float>>() {}.type
+            Double::class.java -> object : TypeToken<CouchbaseDocument<Double>>() {}.type
+            Unit::class.java -> object : TypeToken<CouchbaseDocument<Unit>>() {}.type
+            Void::class.java -> object : TypeToken<CouchbaseDocument<Void>>() {}.type
+            else -> TypeToken.getParameterized(CouchbaseDocument::class.java, modelType).type
         }
         //Log.d(TAG, "mapObjectToCouchBaseDocument: document: $document")
         //Log.d(TAG, "mapObjectToCouchBaseDocument: modelType: $modelType")
@@ -84,7 +84,7 @@ class CouchBaseDatabase (
      * Save a document in the database
      * @param document document to be saved
      */
-    fun <T> save(document: CouchBaseDocument<T>) {
+    fun <T> save(document: CouchbaseDocument<T>) {
         val databaseDocument = database.getDocument(document.id)?.toMutable() ?: MutableDocument(document.id)
         try {
             val data: HashMap<String, Any> =
@@ -105,7 +105,7 @@ class CouchBaseDatabase (
      * Save a list of documents in the database
      * @param documents list of documents to be saved
      */
-    fun <T> save(documents: List<CouchBaseDocument<T>>) {
+    fun <T> save(documents: List<CouchbaseDocument<T>>) {
         database.inBatch {
             documents.forEach { document ->
                 save(document)
@@ -198,7 +198,7 @@ class CouchBaseDatabase (
      * Delete a list of documents of the database
      * @param documents list of documents to be deleted
      */
-    fun <T> delete(documents: List<CouchBaseDocument<T>>) {
+    fun <T> delete(documents: List<CouchbaseDocument<T>>) {
         try {
             database.inBatch {
                 documents.forEach { document ->

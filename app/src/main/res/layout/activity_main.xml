@@ -4,33 +4,150 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="24dp"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/saveProductsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="save products"
-        app:layout_constraintEnd_toStartOf="@+id/fetchAllProductsButton"
-        app:layout_constraintHorizontal_bias="0.5"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/idTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/edit_text_height"
+        android:hint="id"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/idEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nameTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/edit_text_height"
+        android:layout_marginTop="12dp"
+        android:hint="name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/idTextInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/quantityTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/edit_text_height"
+        android:layout_marginTop="12dp"
+        android:hint="quantity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameTextInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/quantityEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
-        android:id="@+id/fetchAllProductsButton"
-        android:layout_width="wrap_content"
+        android:id="@+id/saveProductButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="get products"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/teal_700"
+        android:text="save product"
+        app:layout_constraintTop_toBottomOf="@+id/quantityTextInputLayout"
+        tools:layout_editor_absoluteX="24dp" />
+
+    <Button
+        android:id="@+id/deleteProductButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="delete product"
+        app:layout_constraintEnd_toStartOf="@+id/deleteAllButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/saveProductButton" />
+
+    <Button
+        android:id="@+id/deleteAllButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="delete all"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/saveProductsButton"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/deleteProductButton"
+        app:layout_constraintTop_toTopOf="@+id/deleteProductButton" />
+
+    <Button
+        android:id="@+id/quantityLimitButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="print with quantity filter"
+        app:layout_constraintBottom_toBottomOf="@+id/quantityLimitFilterInputLayout"
+        app:layout_constraintEnd_toStartOf="@+id/quantityLimitFilterInputLayout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deleteProductButton" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/quantityLimitFilterInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/edit_text_height"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="8dp"
+        android:hint="quantity limit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/quantityLimitButton"
+        app:layout_constraintTop_toBottomOf="@id/deleteProductButton">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/quantityLimitFilterEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/sortDescendingByQuantityButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="sort all descending by quantity"
+        app:layout_constraintEnd_toStartOf="@+id/deleteAllButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quantityLimitButton" />
+
+    <Button
+        android:id="@+id/sortAscendingByQuantityButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="sort all ascending by quantity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/sortDescendingByQuantityButton"
+        app:layout_constraintTop_toTopOf="@+id/sortDescendingByQuantityButton" />
 
     <ListView
         android:id="@+id/productsListView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/saveProductsButton" />
+        app:layout_constraintTop_toBottomOf="@+id/sortDescendingByQuantityButton"
+        tools:layout_editor_absoluteX="24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

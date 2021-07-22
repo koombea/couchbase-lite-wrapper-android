@@ -22,26 +22,26 @@ import org.junit.Rule
 @ExperimentalCoroutinesApi
 class CouchBaseDatabaseTest {
 
-    lateinit var database: CouchBaseDatabase
+    lateinit var database: CouchbaseDatabase
     lateinit var instrumentationContext: Context
     private val product1 = Product(id = "1", name = "car", 40)
     private val product2 = Product(id = "2", name = "plane", 20)
     private val product3 = Product(id = "3", name = "skate", 30)
     private val product4 = Product(id = "4", name = "boat", 10)
-    private val document1 = CouchBaseDocument(id = product1.id, attributes = product1)
-    private val document2 = CouchBaseDocument(id = product2.id, attributes = product2)
-    private val document3 = CouchBaseDocument(id = product3.id, attributes = product3)
-    private val document4 = CouchBaseDocument(id = product4.id, attributes = product4)
+    private val document1 = CouchbaseDocument(id = product1.id, attributes = product1)
+    private val document2 = CouchbaseDocument(id = product2.id, attributes = product2)
+    private val document3 = CouchbaseDocument(id = product3.id, attributes = product3)
+    private val document4 = CouchbaseDocument(id = product4.id, attributes = product4)
     private val products = listOf(product1, product2, product3, product4)
     private val documents = listOf(document1, document2, document3, document4)
     private val shoppingCart1 = ShoppingCart(id = "1", date = "05-05-2020", product = product1)
     private val shoppingCart2 = ShoppingCart(id = "2", date = "15-06-2020", product = product2)
     private val shoppingCart3 = ShoppingCart(id = "3", date = "25-07-2020", product = product3)
     private val shoppingCart4 = ShoppingCart(id = "4", date = "05-08-2020", product = product4)
-    private val shoppingCartDocument1 = CouchBaseDocument(id = shoppingCart1.id, attributes = shoppingCart1)
-    private val shoppingCartDocument2 = CouchBaseDocument(id = shoppingCart2.id, attributes = shoppingCart2)
-    private val shoppingCartDocument3 = CouchBaseDocument(id = shoppingCart3.id, attributes = shoppingCart3)
-    private val shoppingCartDocument4 = CouchBaseDocument(id = shoppingCart4.id, attributes = shoppingCart4)
+    private val shoppingCartDocument1 = CouchbaseDocument(id = shoppingCart1.id, attributes = shoppingCart1)
+    private val shoppingCartDocument2 = CouchbaseDocument(id = shoppingCart2.id, attributes = shoppingCart2)
+    private val shoppingCartDocument3 = CouchbaseDocument(id = shoppingCart3.id, attributes = shoppingCart3)
+    private val shoppingCartDocument4 = CouchbaseDocument(id = shoppingCart4.id, attributes = shoppingCart4)
     private val shoppingCarts = listOf(shoppingCart1, shoppingCart2, shoppingCart3, shoppingCart4)
     private val shoppingCartDocuments = listOf(shoppingCartDocument1, shoppingCartDocument2, shoppingCartDocument3, shoppingCartDocument4)
 
@@ -51,7 +51,7 @@ class CouchBaseDatabaseTest {
     @Before
     fun setUp() = runBlockingTest {
         instrumentationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        database = CouchBaseDatabase(
+        database = CouchbaseDatabase(
                     instrumentationContext,
             "TEST_DB")
         //awaitInitialization()
@@ -75,7 +75,7 @@ class CouchBaseDatabaseTest {
     @Test
     fun saveAndFetchDouble() = runBlockingTest {
         val expected = 20.5
-        database.save(CouchBaseDocument(id = "1", attributes = expected))
+        database.save(CouchbaseDocument(id = "1", attributes = expected))
         val fetch = database.fetchAll(modelType = Double::class.java).first()
         assertEquals(expected, fetch, 0.001)
     }
@@ -99,7 +99,7 @@ class CouchBaseDatabaseTest {
     @Test
     fun fetchOnlyOneObjectWhereIdEqualsTwoWithAttributesPrepend() = runBlockingTest {
         database.save(documents)
-        val whereExpression = WhereExpression.property("id").equalTo(Expression.string("2"))
+        val whereExpression = CustomExpression.property("id").equalTo(Expression.string("2"))
         //val fetchOne = database.fetchAll(whereExpression = whereExpression).first()
         val fetchOne = database.fetchAll(whereExpression = whereExpression, modelType = Product::class.java).first()
         assertEquals(product2, fetchOne)
@@ -132,7 +132,7 @@ class CouchBaseDatabaseTest {
         val product = Product(id = "1", name = "new product", quantity = 999)
         val expected = products.subList(1, products.size).toMutableList()
         expected.add(0, product)
-        database.save(CouchBaseDocument(id = "1", attributes = product))
+        database.save(CouchbaseDocument(id = "1", attributes = product))
         //val fetchAll = database.fetchAll()
         val fetchAll = database.fetchAll(modelType = Product::class.java)
         assertEquals(expected, fetchAll)
@@ -172,8 +172,8 @@ class CouchBaseDatabaseTest {
     fun deleteTheFirstTwoDocuments() = runBlockingTest {
         database.save(documents)
         database.delete(listOf(
-            CouchBaseDocument(id = "1", attributes = product1),
-            CouchBaseDocument(id = "2", attributes = product2))
+            CouchbaseDocument(id = "1", attributes = product1),
+            CouchbaseDocument(id = "2", attributes = product2))
         )
         //val fetchAll = database.fetchAll()
         val fetchAll = database.fetchAll(modelType = Product::class.java)

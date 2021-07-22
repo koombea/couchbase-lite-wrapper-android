@@ -3,20 +3,22 @@ package com.koombea.couchbasewrapper
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import com.koombea.couchbasewrapper.database.CouchBaseDatabase
-import com.koombea.couchbasewrapper.database.CouchBaseDocument
+import com.couchbase.lite.Expression
+import com.couchbase.lite.Ordering
+import com.koombea.couchbasewrapper.database.CouchbaseDatabase
+import com.koombea.couchbasewrapper.database.CouchbaseDocument
 import com.koombea.couchbasewrapper.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var productDatabase: CouchBaseDatabase
+    private lateinit var productDatabase: CouchbaseDatabase
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        productDatabase = CouchBaseDatabase(this, "products_db")
+        productDatabase = CouchbaseDatabase(this, "products_db")
 //        val product1 = Product(id = "1", "car", 1000)
 //        val product2 = Product(id = "2", "plane", 2000)
 //
@@ -100,30 +102,85 @@ class MainActivity : AppCompatActivity() {
 //            Expression.string("2")), modelType = Animal::class.java)
 //        val fetchAllAnimalsAfterDeleteWhere= animalDatabase.fetchAll(modelType = Animal::class.java)
 //        Log.d(TAG, "onCreate: fetchAllAnimalsAfterDeleteWhere id=2: $fetchAllAnimalsAfterDeleteWhere")
-        binding.saveProductsButton.setOnClickListener {
-            saveProducts()
-        }
-        binding.fetchAllProductsButton.setOnClickListener {
+        printAllProducts()
+        binding.saveProductButton.setOnClickListener {
+            saveProduct()
             printAllProducts()
+            clearFields()
+        }
+        binding.deleteProductButton.setOnClickListener {
+            deleteProduct()
+            printAllProducts()
+        }
+        binding.deleteAllButton.setOnClickListener {
+            deleteAllProducts()
+            printAllProducts()
+        }
+        binding.quantityLimitButton.setOnClickListener {
+            printAllWhereQuantityIsLessThanOrEqualTo(binding.quantityLimitFilterEditText.text.toString().toIntOrNull() ?: 0)
+        }
+        binding.sortDescendingByQuantityButton.setOnClickListener {
+            printAllSortedByQuantityDescending()
+        }
+        binding.sortAscendingByQuantityButton.setOnClickListener {
+            printAllSortedByQuantityAscending()
         }
     }
 
-    private fun saveProducts() {
-        val product1 = Product(id = "1", "car", 1000)
-        val product2 = Product(id = "2", "plane", 2000)
-//        val product1 = Product(id = "1", "car")
-//        val product2 = Product(id = "2", "plane")
-        val productDocument1 = CouchBaseDocument(id = product1.id, attributes = product1)
-        val productDocument2 = CouchBaseDocument(id = product2.id, attributes = product2)
-        val productDocumentList = listOf(productDocument1, productDocument2)
-        productDatabase.save(productDocumentList)
+    private fun saveProduct() {
+        val id = binding.idEditText.text.toString()
+        val name = binding.nameEditText.text.toString()
+        val quantity = binding.quantityEditText.text.toString().toIntOrNull() ?: 0
+        val product = Product(
+            id = id,
+            name = name,
+            quantity = quantity
+        )
+        val document = CouchbaseDocument(id = id, attributes = product)
+        productDatabase.save(document)
+    }
+
+    private fun deleteProduct() {
+        val id = binding.idEditText.text.toString()
+        productDatabase.delete(id)
+    }
+
+    private fun deleteAllProducts() {
+        productDatabase.deleteAll(modelType = Product::class.java)
+    }
+
+    private fun printAllWhereQuantityIsLessThanOrEqualTo(lessThan: Int) {
+        val whereExpression = Expression.property("attributes.quantity").lessThanOrEqualTo(Expression.intValue(lessThan))
+        val productList = productDatabase.fetchAll(whereExpression = whereExpression, modelType = Product::class.java)
+        printList(productList)
+    }
+
+    private fun printAllSortedByQuantityDescending() {
+        val orderBy = arrayOf(Ordering.property("attributes.quantity").descending())
+        val productList = productDatabase.fetchAll(orderedBy = orderBy, modelType = Product::class.java)
+        printList(productList)
+    }
+
+    private fun printAllSortedByQuantityAscending() {
+        val orderBy = arrayOf(Ordering.property("attributes.quantity").ascending())
+        val productList = productDatabase.fetchAll(orderedBy = orderBy, modelType = Product::class.java)
+        printList(productList)
     }
 
     private fun printAllProducts() {
-        //val fetchAll = productDatabase.fetchAll()
-        val fetchAll = productDatabase.fetchAll(modelType = Product::class.java)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fetchAll)
+        val productList = productDatabase.fetchAll(modelType = Product::class.java)
+        printList(productList)
+    }
+
+    private fun printList(productList: List<Product>) {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, productList)
         binding.productsListView.adapter = adapter
+    }
+
+    private fun clearFields() {
+        binding.idEditText.text?.clear()
+        binding.nameEditText.text?.clear()
+        binding.quantityEditText.text?.clear()
     }
 
     companion object {

@@ -3,7 +3,7 @@ package com.koombea.couchbasewrapper.database
 import com.couchbase.lite.PropertyExpression
 import com.couchbase.lite.internal.utils.Preconditions
 
-class WhereExpression {
+class CustomExpression {
     companion object {
         /**
          * Use this static method to create a PropertyExpression instance with "attributes."
