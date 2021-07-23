@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package com.koombea.couchbasewrapper.database
+package com.kouchbase.couchbasewrapper.utils
 
 import com.couchbase.lite.PropertyExpression
 import com.couchbase.lite.internal.utils.Preconditions
