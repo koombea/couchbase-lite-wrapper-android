@@ -6,8 +6,8 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.couchbase.lite.Expression
 import com.couchbase.lite.Ordering
-import com.koombea.couchbasewrapper.model.Product
-import com.koombea.couchbasewrapper.model.ShoppingCart
+import com.koombea.couchbaselitewrapper.model.Product
+import com.koombea.couchbaselitewrapper.model.ShoppingCart
 import com.kouchbase.couchbasewrapper.database.CouchbaseDatabase
 import com.kouchbase.couchbasewrapper.database.CouchbaseDocument
 import com.kouchbase.couchbasewrapper.utils.CustomExpression

@@ -1,12 +1,12 @@
-package com.koombea.couchbasewrapper.ui
+package com.koombea.couchbaselitewrapper.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import com.couchbase.lite.Expression
 import com.couchbase.lite.Ordering
-import com.koombea.couchbasewrapper.databinding.ActivityMainBinding
-import com.koombea.couchbasewrapper.model.Product
+import com.koombea.couchbaselitewrapper.databinding.ActivityMainBinding
+import com.koombea.couchbaselitewrapper.model.Product
 import com.kouchbase.couchbasewrapper.database.CouchbaseDatabase
 import com.kouchbase.couchbasewrapper.database.CouchbaseDocument
 

@@ -1,4 +1,4 @@
-package com.koombea.couchbasewrapper.model
+package com.koombea.couchbaselitewrapper.model
 
 data class Product(
     val id: String,
