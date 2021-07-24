@@ -16,6 +16,7 @@
 package com.kouchbase.couchbasewrapper.database
 
 import android.content.Context
+import android.util.Log
 import com.couchbase.lite.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -63,12 +64,12 @@ class CouchbaseDatabase (
         }
     }
 
-    private fun <T> fetchQuery(query: Query, modelType: Class<T>): List<T> {
+    private fun <T> fetchQuery(query: Query): List<T> {
         val results = mutableListOf<T>()
         database.inBatch {
             query.execute().forEach { result ->
                 result.toMap()[databaseName]?.let { document ->
-                    val data = mapObjectToCouchBaseDocument(document, modelType)
+                    val data = mapObjectToCouchBaseDocument<T>(document)
                     results.add(data.attributes)
                     //Log.d(TAG, "fetchQuery: data: $data")
                     //Log.d(TAG, "fetchQuery: attributes: ${data.attributes}")
@@ -95,6 +96,14 @@ class CouchbaseDatabase (
         //Log.d(TAG, "mapObjectToCouchBaseDocument: document: $document")
         //Log.d(TAG, "mapObjectToCouchBaseDocument: modelType: $modelType")
         return gson.fromJson(gson.toJson(document), type)
+    }
+
+    private fun <T> mapObjectToCouchBaseDocument(document: Any): CouchbaseDocument<T> {
+        val type = object : TypeToken<CouchbaseDocument<T>>() {}.type
+        val innerType = object : TypeToken<T>() {}.type
+        //Log.d(TAG, "mapObjectToCouchBaseDocument: document: $document")
+        //Log.d(TAG, "mapObjectToCouchBaseDocument: type: $type")
+        return gson.fromJson<CouchbaseDocument<T>>(gson.toJson(document), type)
     }
 
     /**
@@ -137,7 +146,7 @@ class CouchbaseDatabase (
      * @param modelType type of the class saved in the database, this specify the returning type of the generic object
      * @return list of generic object
      */
-    fun <T> fetchAll(whereExpression: Expression? = null, orderedBy: Array<Ordering>? = null, modelType: Class<T>): List<T> {
+    fun <T> fetchAll(whereExpression: Expression? = null, orderedBy: Array<Ordering>? = null): List<T> {
         var query: Query = QueryBuilder.select(SelectResult.all())
             .from(DataSource.database(database))
         (query as From).let { fromQuery ->
@@ -152,7 +161,18 @@ class CouchbaseDatabase (
                 query = fromQuery.orderBy(*orderedBy)
             }
         }
-        return fetchQuery(query, modelType)
+        //return fetchQuery(query)
+        val results = mutableListOf<T>()
+        database.inBatch {
+            query.execute().forEach { result ->
+                result.toMap()[databaseName]?.let { document ->
+                    //val data = gson.fromJson<CouchbaseDocument<T>>(gson.toJson(document), type)
+                    val data = mapObjectToCouchBaseDocument<T>(document)
+                    results.add(data.attributes)
+                }
+            }
+        }
+        return results
     }
 
     /**
@@ -174,7 +194,7 @@ class CouchbaseDatabase (
      * @param whereExpression expression to filter the documents to be deleted
      * @param modelType type of the class saved in the database
      */
-    fun <T> deleteAll(whereExpression: Expression? = null, modelType: Class<T>) {
+    fun <T> deleteAll(whereExpression: Expression? = null) {
         val fromQuery = QueryBuilder.select(SelectResult.all())
             .from(DataSource.database(database))
         var whereQuery: Where? = null
@@ -186,7 +206,7 @@ class CouchbaseDatabase (
             database.inBatch {
                 (query as Query).execute().forEach { result ->
                     result.toMap()[databaseName]?.let { document ->
-                        val couchbaseDocument = mapObjectToCouchBaseDocument(document, modelType)
+                        val couchbaseDocument = mapObjectToCouchBaseDocument<T>(document)
                         database.delete(database.getDocument(couchbaseDocument.id))
                         //Log.d(TAG, "deleteAll: data: $couchbaseDocument")
                         //Log.d(TAG, "deleteAll: attributes: ${couchbaseDocument.attributes}")

@@ -77,14 +77,14 @@ class CouchBaseDatabaseTest {
     @Test
     fun saveAndFetchAll() = runBlockingTest {
         database.save(documents)
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val fetchAll = database.fetchAll<Product>()
         assertEquals(products, fetchAll)
     }
 
     @Test
     fun saveAndFetchAllWithNestedObject() = runBlockingTest {
         database.save(shoppingCartDocuments)
-        val fetchAll = database.fetchAll(modelType = ShoppingCart::class.java)
+        val fetchAll = database.fetchAll<ShoppingCart>()
         assertEquals(shoppingCarts, fetchAll)
     }
 
@@ -97,7 +97,7 @@ class CouchBaseDatabaseTest {
                 attributes = expected
             )
         )
-        val fetch = database.fetchAll(modelType = Double::class.java).first()
+        val fetch = database.fetchAll<Double>().first()
         assertEquals(expected, fetch, 0.001)
     }
 
@@ -112,7 +112,7 @@ class CouchBaseDatabaseTest {
     fun fetchOnlyOneObjectWhereIdEqualsTwo() = runBlockingTest {
         database.save(documents)
         val whereExpression = Expression.property("attributes.id").equalTo(Expression.string("2"))
-        val fetchOne = database.fetchAll(whereExpression = whereExpression, modelType = Product::class.java).first()
+        val fetchOne = database.fetchAll<Product>(whereExpression = whereExpression).first()
         assertEquals(product2, fetchOne)
     }
 
@@ -120,7 +120,7 @@ class CouchBaseDatabaseTest {
     fun fetchOnlyOneObjectWhereIdEqualsTwoWithAttributesPrepend() = runBlockingTest {
         database.save(documents)
         val whereExpression = CustomExpression.property("id").equalTo(Expression.string("2"))
-        val fetchOne = database.fetchAll(whereExpression = whereExpression, modelType = Product::class.java).first()
+        val fetchOne = database.fetchAll<Product>(whereExpression = whereExpression).first()
         assertEquals(product2, fetchOne)
     }
 
@@ -129,7 +129,7 @@ class CouchBaseDatabaseTest {
         database.save(documents)
         val productsOrderedDescendingByQuantity = listOf(product1, product3, product2, product4)
         val orderBy = arrayOf(Ordering.property("attributes.quantity").descending())
-        val fetchAll = database.fetchAll(orderedBy = orderBy, modelType = Product::class.java)
+        val fetchAll = database.fetchAll<Product>(orderedBy = orderBy)
         assertEquals(productsOrderedDescendingByQuantity, fetchAll)
     }
 
@@ -139,7 +139,7 @@ class CouchBaseDatabaseTest {
         val expected = listOf(product4, product3)
         val whereExpression = Expression.property("attributes.id").greaterThan(Expression.string("2"))
         val orderBy = arrayOf(Ordering.property("attributes.quantity").ascending())
-        val fetchAll = database.fetchAll(whereExpression = whereExpression, orderedBy = orderBy, modelType = Product::class.java)
+        val fetchAll = database.fetchAll<Product>(whereExpression = whereExpression, orderedBy = orderBy)
         assertEquals(expected, fetchAll)
     }
 
@@ -155,15 +155,15 @@ class CouchBaseDatabaseTest {
                 attributes = product
             )
         )
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val fetchAll = database.fetchAll<Product>()
         assertEquals(expected, fetchAll)
     }
 
     @Test
     fun deleteAllDocuments() = runBlockingTest {
         database.save(documents)
-        database.deleteAll(modelType = Product::class.java)
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        database.deleteAll<Product>()
+        val fetchAll = database.fetchAll<Product>()
         assertEquals(0, fetchAll.size)
     }
 
@@ -171,8 +171,8 @@ class CouchBaseDatabaseTest {
     fun deleteAllWhereQuantityIsGreaterThan20() = runBlockingTest {
         database.save(documents)
         val whereExpression = Expression.property("attributes.quantity").greaterThan(Expression.intValue(20))
-        database.deleteAll(whereExpression = whereExpression, modelType = Product::class.java)
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        database.deleteAll<Product>(whereExpression = whereExpression)
+        val fetchAll = database.fetchAll<Product>()
         val expected = products.filterNot { it.quantity > 20 }
         assertEquals(expected, fetchAll)
     }
@@ -181,7 +181,7 @@ class CouchBaseDatabaseTest {
     fun deleteOnlyTheFirstDocument() = runBlockingTest {
         database.save(documents)
         database.delete(id = "1")
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val fetchAll = database.fetchAll<Product>()
         val expected = products.subList(1, products.size)
         assertEquals(expected, fetchAll)
     }
@@ -193,7 +193,7 @@ class CouchBaseDatabaseTest {
             CouchbaseDocument(id = "1", attributes = product1),
             CouchbaseDocument(id = "2", attributes = product2))
         )
-        val fetchAll = database.fetchAll(modelType = Product::class.java)
+        val fetchAll = database.fetchAll<Product>()
         val expected = products.subList(2, products.size)
         assertEquals(expected, fetchAll)
     }
