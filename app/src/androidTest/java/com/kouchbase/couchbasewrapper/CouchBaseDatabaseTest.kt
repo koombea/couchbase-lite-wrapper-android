@@ -104,7 +104,7 @@ class CouchBaseDatabaseTest {
     @Test
     fun fetchOnlyOneObject() = runBlockingTest {
         database.save(documents)
-        val fetchOne = database.fetch(id = document1.id, modelType = Product::class.java)
+        val fetchOne = database.fetch<Product>(id = document1.id)
         assertEquals(product1, fetchOne)
     }
 

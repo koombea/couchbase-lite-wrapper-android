@@ -31,17 +31,18 @@ import java.util.*
  */
 class CouchbaseDatabase (
     private val context: Context,
-    private val databaseName: String,
+    @PublishedApi internal val databaseName: String,
     private val configuration: CouchbaseDatabaseConfiguration? = null
 ) {
 
-    private val gson: Gson by lazy { Gson() }
+    @PublishedApi
+    internal val gson: Gson by lazy { Gson() }
+    @PublishedApi
+    internal lateinit var database: Database
 
     init {
         setup()
     }
-
-    private lateinit var database: Database
 
     private fun setup() {
         kotlin.runCatching {
@@ -64,46 +65,10 @@ class CouchbaseDatabase (
         }
     }
 
-    private fun <T> fetchQuery(query: Query): List<T> {
-        val results = mutableListOf<T>()
-        database.inBatch {
-            query.execute().forEach { result ->
-                result.toMap()[databaseName]?.let { document ->
-                    val data = mapObjectToCouchBaseDocument<T>(document)
-                    results.add(data.attributes)
-                    //Log.d(TAG, "fetchQuery: data: $data")
-                    //Log.d(TAG, "fetchQuery: attributes: ${data.attributes}")
-                }
-            }
-        }
-        return results
-    }
-
-    private fun <T> mapObjectToCouchBaseDocument(document: Any, modelType: Class<T>): CouchbaseDocument<T> {
-        val type = when (modelType) {
-            Boolean::class.java -> object : TypeToken<CouchbaseDocument<Boolean>>() {}.type
-            Char::class.java -> object : TypeToken<CouchbaseDocument<Char>>() {}.type
-            Byte::class.java -> object : TypeToken<CouchbaseDocument<Byte>>() {}.type
-            Short::class.java -> object : TypeToken<CouchbaseDocument<Short>>() {}.type
-            Int::class.java -> object : TypeToken<CouchbaseDocument<Int>>() {}.type
-            Long::class.java -> object : TypeToken<CouchbaseDocument<Long>>() {}.type
-            Float::class.java -> object : TypeToken<CouchbaseDocument<Float>>() {}.type
-            Double::class.java -> object : TypeToken<CouchbaseDocument<Double>>() {}.type
-            Unit::class.java -> object : TypeToken<CouchbaseDocument<Unit>>() {}.type
-            Void::class.java -> object : TypeToken<CouchbaseDocument<Void>>() {}.type
-            else -> TypeToken.getParameterized(CouchbaseDocument::class.java, modelType).type
-        }
-        //Log.d(TAG, "mapObjectToCouchBaseDocument: document: $document")
-        //Log.d(TAG, "mapObjectToCouchBaseDocument: modelType: $modelType")
-        return gson.fromJson(gson.toJson(document), type)
-    }
-
-    private fun <T> mapObjectToCouchBaseDocument(document: Any): CouchbaseDocument<T> {
+    @PublishedApi
+    internal inline fun <reified T> mapObjectToCouchBaseDocument(document: Any): CouchbaseDocument<T> {
         val type = object : TypeToken<CouchbaseDocument<T>>() {}.type
-        val innerType = object : TypeToken<T>() {}.type
-        //Log.d(TAG, "mapObjectToCouchBaseDocument: document: $document")
-        //Log.d(TAG, "mapObjectToCouchBaseDocument: type: $type")
-        return gson.fromJson<CouchbaseDocument<T>>(gson.toJson(document), type)
+        return gson.fromJson(gson.toJson(document), type)
     }
 
     /**
@@ -146,7 +111,7 @@ class CouchbaseDatabase (
      * @param modelType type of the class saved in the database, this specify the returning type of the generic object
      * @return list of generic object
      */
-    fun <T> fetchAll(whereExpression: Expression? = null, orderedBy: Array<Ordering>? = null): List<T> {
+    inline fun <reified T> fetchAll(whereExpression: Expression? = null, orderedBy: Array<Ordering>? = null): List<T> {
         var query: Query = QueryBuilder.select(SelectResult.all())
             .from(DataSource.database(database))
         (query as From).let { fromQuery ->
@@ -161,12 +126,10 @@ class CouchbaseDatabase (
                 query = fromQuery.orderBy(*orderedBy)
             }
         }
-        //return fetchQuery(query)
         val results = mutableListOf<T>()
         database.inBatch {
             query.execute().forEach { result ->
                 result.toMap()[databaseName]?.let { document ->
-                    //val data = gson.fromJson<CouchbaseDocument<T>>(gson.toJson(document), type)
                     val data = mapObjectToCouchBaseDocument<T>(document)
                     results.add(data.attributes)
                 }
@@ -181,10 +144,10 @@ class CouchbaseDatabase (
      * @param modelType type of the class saved in the database, this specify the returning type of the generic object
      * @return list of generic object with size 1 if the searched object was found, otherwise size 0
      */
-    fun <T> fetch(id: String, modelType: Class<T>): T? {
+    inline fun <reified T> fetch(id: String): T? {
         val databaseDocument = database.getDocument(id)
         if(databaseDocument != null) {
-            return mapObjectToCouchBaseDocument(databaseDocument.toMap(), modelType).attributes
+            return mapObjectToCouchBaseDocument<T>(databaseDocument.toMap()).attributes
         }
         return null
     }
@@ -194,7 +157,7 @@ class CouchbaseDatabase (
      * @param whereExpression expression to filter the documents to be deleted
      * @param modelType type of the class saved in the database
      */
-    fun <T> deleteAll(whereExpression: Expression? = null) {
+    inline fun <reified T> deleteAll(whereExpression: Expression? = null) {
         val fromQuery = QueryBuilder.select(SelectResult.all())
             .from(DataSource.database(database))
         var whereQuery: Where? = null
