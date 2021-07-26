@@ -1,3 +1,18 @@
+//
+// Copyright (c) 2021 Koombea, Inc All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 package com.kouchbase.couchbasewrapper
 
 import android.content.Context
@@ -185,18 +200,6 @@ class CouchBaseDatabaseTest {
         val expected = products.subList(1, products.size)
         assertEquals(expected, fetchAll)
     }
-
-//    @Test
-//    fun deleteTheFirstTwoDocuments() = runBlockingTest {
-//        database.save(documents)
-//        database.delete(listOf(
-//            CouchbaseDocument(id = "1", attributes = product1),
-//            CouchbaseDocument(id = "2", attributes = product2))
-//        )
-//        val fetchAll = database.fetchAll<Product>()
-//        val expected = products.subList(2, products.size)
-//        assertEquals(expected, fetchAll)
-//    }
 
     @After
     fun teardown() {

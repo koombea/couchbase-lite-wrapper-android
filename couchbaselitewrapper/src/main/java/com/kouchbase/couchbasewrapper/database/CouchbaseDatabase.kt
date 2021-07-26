@@ -24,7 +24,7 @@ import java.lang.Exception
 import java.util.*
 
 /**
- * Couchbase Wrapper with basic CRUD
+ * Couchbase Lite Wrapper with basic CRUD
  * The intended usage is to save only one type of object in each database instance
  * If another kind of object would be saved, then create another CouchbaseDatabase to operate
  * with that object type
@@ -169,8 +169,6 @@ class CouchbaseDatabase (
                         val type = object : TypeToken<CouchbaseDocument<Any>>() {}.type
                         val couchbaseDocument = gson.fromJson<CouchbaseDocument<Any>>(gson.toJson(document), type)
                         database.delete(database.getDocument(couchbaseDocument.id))
-                        //Log.d(TAG, "deleteAll: data: $couchbaseDocument")
-                        //Log.d(TAG, "deleteAll: attributes: ${couchbaseDocument.attributes}")
                     }
                 }
             }
