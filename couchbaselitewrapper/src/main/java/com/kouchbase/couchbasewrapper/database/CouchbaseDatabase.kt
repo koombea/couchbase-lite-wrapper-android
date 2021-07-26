@@ -108,7 +108,6 @@ class CouchbaseDatabase (
      * Fetch all data in the database
      * @param whereExpression expression to filter the query
      * @param orderedBy array of Ordering objects, which are useful to sort the retrieved data
-     * @param modelType type of the class saved in the database, this specify the returning type of the generic object
      * @return list of generic object
      */
     inline fun <reified T> fetchAll(whereExpression: Expression? = null, orderedBy: Array<Ordering>? = null): List<T> {
@@ -141,7 +140,6 @@ class CouchbaseDatabase (
     /**
      * Fetch one document based on the id of the input document.
      * @param id id of the document to be retrieved
-     * @param modelType type of the class saved in the database, this specify the returning type of the generic object
      * @return list of generic object with size 1 if the searched object was found, otherwise size 0
      */
     inline fun <reified T> fetch(id: String): T? {
@@ -155,9 +153,8 @@ class CouchbaseDatabase (
     /**
      * Delete all documents in the database
      * @param whereExpression expression to filter the documents to be deleted
-     * @param modelType type of the class saved in the database
      */
-    inline fun <reified T> deleteAll(whereExpression: Expression? = null) {
+    fun deleteAll(whereExpression: Expression? = null) {
         val fromQuery = QueryBuilder.select(SelectResult.all())
             .from(DataSource.database(database))
         var whereQuery: Where? = null
@@ -169,7 +166,8 @@ class CouchbaseDatabase (
             database.inBatch {
                 (query as Query).execute().forEach { result ->
                     result.toMap()[databaseName]?.let { document ->
-                        val couchbaseDocument = mapObjectToCouchBaseDocument<T>(document)
+                        val type = object : TypeToken<CouchbaseDocument<Any>>() {}.type
+                        val couchbaseDocument = gson.fromJson<CouchbaseDocument<Any>>(gson.toJson(document), type)
                         database.delete(database.getDocument(couchbaseDocument.id))
                         //Log.d(TAG, "deleteAll: data: $couchbaseDocument")
                         //Log.d(TAG, "deleteAll: attributes: ${couchbaseDocument.attributes}")
@@ -190,22 +188,6 @@ class CouchbaseDatabase (
         try {
             database.delete(databaseDocument)
         } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    /**
-     * Delete a list of documents of the database
-     * @param documents list of documents to be deleted
-     */
-    fun <T> delete(documents: List<CouchbaseDocument<T>>) {
-        try {
-            database.inBatch {
-                documents.forEach { document ->
-                    delete(document.id)
-                }
-            }
-        }catch (e: Exception) {
             e.printStackTrace()
         }
     }

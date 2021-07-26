@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun deleteAllProducts() {
-        productDatabase.deleteAll<Product>()
+        productDatabase.deleteAll()
     }
 
     private fun printAllWhereQuantityIsLessThanOrEqualTo(lessThan: Int) {
