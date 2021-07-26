@@ -4,6 +4,9 @@
 
 **Couchbase Lite Wrapper** is a library written in Kotlin that makes it easy for you to implement database CRUD operations with [Couchbase Lite for Android](https://github.com/couchbase/couchbase-lite-android)
 
+## Requirements
+- Api 21+
+
 ## Installation
 
 First add the Jitpack repository in root build.gradle:
@@ -19,7 +22,7 @@ First add the Jitpack repository in root build.gradle:
 Then add the dependency with:
 ```groovy
     dependencies {
-    	        implementation 'com.github.koombea.couchbase-lite-wrapper-android:couchbaselitewrapper:1.0.0'
+    	        implementation 'com.github.koombea:couchbase-lite-wrapper-android:1.0.0'
     	}
 
 ```
