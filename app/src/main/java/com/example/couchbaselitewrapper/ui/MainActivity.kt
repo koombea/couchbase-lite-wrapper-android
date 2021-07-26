@@ -13,17 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package com.koombea.couchbaselitewrapper.ui
+package com.example.couchbaselitewrapper.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import com.couchbase.lite.Expression
 import com.couchbase.lite.Ordering
-import com.koombea.couchbaselitewrapper.databinding.ActivityMainBinding
-import com.koombea.couchbaselitewrapper.model.Product
-import com.kouchbase.couchbasewrapper.database.CouchbaseDatabase
-import com.kouchbase.couchbasewrapper.database.CouchbaseDocument
+import com.example.couchbaselitewrapper.databinding.ActivityMainBinding
+import com.example.couchbaselitewrapper.model.Product
+import com.koombea.couchbasewrapper.database.CouchbaseDatabase
+import com.koombea.couchbasewrapper.database.CouchbaseDocument
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.koombea.couchbaselitewrapper.model
+package com.example.couchbaselitewrapper.model
 
 data class ShoppingCart(
     val id: String,

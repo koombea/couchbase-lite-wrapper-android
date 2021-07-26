@@ -1,4 +1,4 @@
-package com.kouchbase.couchbasewrapper
+package com.koombea.couchbasewrapper
 
 import org.junit.Test
 

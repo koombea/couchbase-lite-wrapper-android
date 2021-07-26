@@ -1,4 +1,4 @@
-package com.koombea.couchbaselitewrapper
+package com.example.couchbaselitewrapper
 
 import org.junit.Test
 

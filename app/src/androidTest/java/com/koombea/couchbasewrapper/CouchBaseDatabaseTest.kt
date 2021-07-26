@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package com.kouchbase.couchbasewrapper
+package com.koombea.couchbasewrapper
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -21,11 +21,11 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.couchbase.lite.Expression
 import com.couchbase.lite.Ordering
-import com.koombea.couchbaselitewrapper.model.Product
-import com.koombea.couchbaselitewrapper.model.ShoppingCart
-import com.kouchbase.couchbasewrapper.database.CouchbaseDatabase
-import com.kouchbase.couchbasewrapper.database.CouchbaseDocument
-import com.kouchbase.couchbasewrapper.utils.CustomExpression
+import com.example.couchbaselitewrapper.model.Product
+import com.example.couchbaselitewrapper.model.ShoppingCart
+import com.koombea.couchbasewrapper.database.CouchbaseDatabase
+import com.koombea.couchbasewrapper.database.CouchbaseDocument
+import com.koombea.couchbasewrapper.utils.CustomExpression
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After

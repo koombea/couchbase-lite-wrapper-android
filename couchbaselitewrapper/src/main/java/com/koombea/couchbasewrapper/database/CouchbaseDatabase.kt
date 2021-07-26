@@ -13,10 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-package com.kouchbase.couchbasewrapper.database
+package com.koombea.couchbasewrapper.database
 
 import android.content.Context
-import android.util.Log
 import com.couchbase.lite.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
