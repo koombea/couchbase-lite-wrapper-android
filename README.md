@@ -11,19 +11,19 @@
 
 First add the Jitpack repository in root build.gradle:
 ```groovy
-    allprojects {
-        repositories {
-            ...
-            maven { url 'https://jitpack.io' }
-        }
-    }   
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}   
 
 ```
 Then add the dependency with:
 ```groovy
-    dependencies {
-        implementation 'com.github.koombea:couchbase-lite-wrapper-android:1.0.0.1'
-    }
+dependencies {
+    implementation 'com.github.koombea:couchbase-lite-wrapper-android:1.0.0.1'
+}
 
 ```
 
