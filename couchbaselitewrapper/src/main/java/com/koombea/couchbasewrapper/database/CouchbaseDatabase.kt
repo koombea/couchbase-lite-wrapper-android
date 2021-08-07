@@ -109,7 +109,7 @@ class CouchbaseDatabase (
      * @param orderedBy array of Ordering objects, which are useful to sort the retrieved data
      * @return list of generic object
      */
-    inline fun <reified T> fetchAll(whereExpression: Expression? = null, orderedBy: Array<Ordering>? = null): List<T> {
+     inline fun <reified T> fetchAll(whereExpression: Expression? = null, orderedBy: Array<Ordering>? = null): List<T> {
         var query: Query = QueryBuilder.select(SelectResult.all())
             .from(DataSource.database(database))
         (query as From).let { fromQuery ->

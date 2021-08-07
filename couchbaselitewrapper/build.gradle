@@ -45,3 +45,21 @@ dependencies {
     implementation 'com.couchbase.lite:couchbase-lite-android:2.8.0'
     implementation 'com.google.code.gson:gson:2.8.7'
 }
+
+ext {
+    PUBLISH_GROUP_ID = 'io.github.koombea'
+    PUBLISH_VERSION = '1.0.0'
+    PUBLISH_ARTIFACT_ID = 'couchbaselitewrapper'
+    PUBLISH_DESCRIPTION = 'Wrapper to ease Couchbase Lite usage in Android'
+    PUBLISH_URL = 'https://github.com/koombea/couchbase-lite-wrapper-android'
+    PUBLISH_LICENSE_NAME = 'Apache License'
+    PUBLISH_LICENSE_URL = 'https://github.com/koombea/couchbase-lite-wrapper-android/blob/master/LICENSE.txt'
+    PUBLISH_DEVELOPER_ID = 'koombea'
+    PUBLISH_DEVELOPER_NAME = 'Juan Gabriel Bustos Armenta'
+    PUBLISH_DEVELOPER_EMAIL = 'juan.bustos@koombea.com'
+    PUBLISH_SCM_CONNECTION = 'scm:git:github.com/koombea/couchbase-lite-wrapper-android.git'
+    PUBLISH_SCM_DEVELOPER_CONNECTION = 'scm:git:ssh://github.com/koombea/couchbase-lite-wrapper-android.git'
+    PUBLISH_SCM_URL = 'https://github.com/koombea/couchbase-lite-wrapper-android/tree/master'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
