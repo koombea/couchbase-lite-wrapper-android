@@ -37,14 +37,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         productDatabase = CouchbaseDatabase(this, "products_db")
-        productDatabase.apply {
-            createCollection("products")
-        }
-
-        val collection = productDatabase.getCollection("products")
-        collection?.let {
-            productCollection = CouchbaseCollection(productDatabase, it)
-        }
+        productCollection = productDatabase.createCollection("products")
 
         setup()
     }

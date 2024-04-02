@@ -64,7 +64,12 @@ class CouchBaseCollectionTest {
         attributes = shoppingCart4
     )
     private val shoppingCarts = listOf(shoppingCart1, shoppingCart2, shoppingCart3, shoppingCart4)
-    private val shoppingCartDocuments = listOf(shoppingCartDocument1, shoppingCartDocument2, shoppingCartDocument3, shoppingCartDocument4)
+    private val shoppingCartDocuments = listOf(
+        shoppingCartDocument1,
+        shoppingCartDocument2,
+        shoppingCartDocument3,
+        shoppingCartDocument4
+    )
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -76,13 +81,7 @@ class CouchBaseCollectionTest {
             instrumentationContext,
             "TEST_DB"
         )
-
-        database.createCollection("Vehicle")
-
-        collection = CouchbaseCollection(
-            couchbaseDatabase = database,
-            collection = database.getCollection("Vehicle")!!
-        )
+        collection = database.createCollection("Vehicle")
     }
 
     @Test
@@ -148,9 +147,11 @@ class CouchBaseCollectionTest {
     fun fetchAllWhereIdIsGreaterThanTwoOrderedByQuantityAscending() = runTest {
         collection.save(documents)
         val expected = listOf(product4, product3)
-        val whereExpression = Expression.property("attributes.id").greaterThan(Expression.string("2"))
+        val whereExpression =
+            Expression.property("attributes.id").greaterThan(Expression.string("2"))
         val orderBy = arrayOf(Ordering.property("attributes.quantity").ascending())
-        val fetchAll = collection.fetchAll<Product>(whereExpression = whereExpression, orderedBy = orderBy)
+        val fetchAll =
+            collection.fetchAll<Product>(whereExpression = whereExpression, orderedBy = orderBy)
         Assert.assertEquals(expected, fetchAll)
     }
 
@@ -181,7 +182,8 @@ class CouchBaseCollectionTest {
     @Test
     fun deleteAllWhereQuantityIsGreaterThan20() = runTest {
         collection.save(documents)
-        val whereExpression = Expression.property("attributes.quantity").greaterThan(Expression.intValue(20))
+        val whereExpression =
+            Expression.property("attributes.quantity").greaterThan(Expression.intValue(20))
         collection.deleteAll(whereExpression = whereExpression)
         val fetchAll = collection.fetchAll<Product>()
         val expected = products.filterNot { it.quantity > 20 }

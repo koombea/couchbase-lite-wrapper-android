@@ -17,7 +17,6 @@ package com.koombea.couchbasewrapper.database
 
 import android.content.Context
 import com.couchbase.lite.*
-import com.couchbase.lite.Collection
 
 /**
  * Couchbase Lite Wrapper with basic CRUD
@@ -62,18 +61,20 @@ class CouchbaseDatabase(
     /**
      * Creates a new collection
      * @param collectionName the name of the collection that is going to be created
-     * @return new [Collection]
+     * @return new [CouchbaseCollection]
      */
-    fun createCollection(collectionName: String): Collection {
-       return database.createCollection(collectionName)
+    fun createCollection(collectionName: String): CouchbaseCollection {
+        val collection = database.createCollection(collectionName)
+        return CouchbaseCollection(this, collection)
     }
 
     /**
-     * Returns a collection from the database
+     * @return a [CouchbaseCollection] from the database
      * @param collectionName the name of the collection that is going to be created
      */
-    fun getCollection(collectionName: String): Collection? {
-       return database.getCollection(collectionName)
+    fun getCollection(collectionName: String): CouchbaseCollection? {
+        val collection = database.getCollection(collectionName)
+        return collection?.let { CouchbaseCollection(this, it) }
     }
 
     /**

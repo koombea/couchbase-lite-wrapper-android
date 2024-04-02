@@ -20,7 +20,7 @@ import java.lang.Exception
 import java.util.HashMap
 
 class CouchbaseCollection(
-    @PublishedApi internal val couchbaseDatabase: CouchbaseDatabase,
+    couchbaseDatabase: CouchbaseDatabase,
     @PublishedApi internal val collection: Collection
 ) {
 
@@ -28,6 +28,14 @@ class CouchbaseCollection(
 
     @PublishedApi
     internal val gson: Gson by lazy { Gson() }
+
+
+    /**
+     * @return the name of the collection
+     */
+    fun name(): String {
+        return collection.name
+    }
 
     /**
      * Saves a document into a Collection

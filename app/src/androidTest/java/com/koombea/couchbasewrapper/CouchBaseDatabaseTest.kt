@@ -50,14 +50,14 @@ class CouchBaseDatabaseTest {
     fun createACollectionSuccessfully() {
         val expectedCollection = database.createCollection("Vehicle")
         val actualCollection = database.getCollection("Vehicle")
-        assertEquals(expectedCollection, actualCollection)
+        assertEquals(expectedCollection.name(), actualCollection?.name())
     }
 
     @Test
     fun deleteACollectionSuccessfully() {
         val expectedCollection = database.createCollection("Vehicle")
         val actualCollection = database.getCollection("Vehicle")
-        assertEquals(expectedCollection, actualCollection)
+        assertEquals(expectedCollection.name(), actualCollection?.name())
         database.deleteCollection("Vehicle")
         val deletedCollection = database.getCollection("Vehicle")
         assertEquals(null, deletedCollection)
