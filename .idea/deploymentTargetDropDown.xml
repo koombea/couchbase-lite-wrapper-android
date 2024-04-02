@@ -2,6 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="CouchBaseDatabaseTest">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_3a_API_34_extension_level_7_arm64-v8a.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-02T18:07:21.228150Z" />
+        </State>
+      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>
@@ -17,6 +33,18 @@
           </targetSelectedWithDropDown>
           <timeTargetWasSelectedWithDropDown value="2024-04-01T22:00:02.224554Z" />
         </State>
+      </entry>
+      <entry key="createACollectionSuccessfully()">
+        <State />
+      </entry>
+      <entry key="createIndexTest()">
+        <State />
+      </entry>
+      <entry key="deleteACollectionSuccessfully()">
+        <State />
+      </entry>
+      <entry key="whenCreateIndexWithTheWordIndexThrowsAnException()">
+        <State />
       </entry>
     </value>
   </component>
