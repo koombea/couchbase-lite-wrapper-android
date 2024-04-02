@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="deploymentTargetDropDown">
-    <targetSelectedWithDropDown>
-      <Target>
-        <type value="QUICK_BOOT_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="$USER_HOME$/.android/avd/Pixel_4_XL_API_30.avd" />
-          </Key>
-        </deviceKey>
-      </Target>
-    </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2021-08-09T22:39:24.101570Z" />
+    <value>
+      <entry key="CouchBaseCollectionTest">
+        <State />
+      </entry>
+      <entry key="CouchBaseDatabaseTest">
+        <State />
+      </entry>
+      <entry key="app">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Nexus_S_API_26.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-01T22:00:02.224554Z" />
+        </State>
+      </entry>
+      <entry key="createACollectionSuccessfully()">
+        <State />
+      </entry>
+      <entry key="deleteACollectionSuccessfully()">
+        <State />
+      </entry>
+      <entry key="whenCreateIndexWithTheWordIndexThrowsAnException()">
+        <State />
+      </entry>
+    </value>
   </component>
 </project>

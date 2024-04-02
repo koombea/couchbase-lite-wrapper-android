@@ -22,12 +22,14 @@ import com.couchbase.lite.Expression
 import com.couchbase.lite.Ordering
 import com.example.couchbaselitewrapper.databinding.ActivityMainBinding
 import com.example.couchbaselitewrapper.model.Product
+import com.koombea.couchbasewrapper.database.CouchbaseCollection
 import com.koombea.couchbasewrapper.database.CouchbaseDatabase
 import com.koombea.couchbasewrapper.database.CouchbaseDocument
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var productDatabase: CouchbaseDatabase
+    private lateinit var productCollection: CouchbaseCollection
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +37,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         productDatabase = CouchbaseDatabase(this, "products_db")
+        productCollection = productDatabase.createCollection("products")
+
         setup()
     }
 
@@ -73,40 +77,39 @@ class MainActivity : AppCompatActivity() {
             name = name,
             quantity = quantity
         )
-        val document =
-            CouchbaseDocument(id = id, attributes = product)
-        productDatabase.save(document)
+        val document = CouchbaseDocument(id = id, attributes = product)
+        productCollection.save(document)
     }
 
     private fun deleteProduct() {
         val id = binding.idEditText.text.toString()
-        productDatabase.delete(id)
+        productCollection.delete(id)
     }
 
     private fun deleteAllProducts() {
-        productDatabase.deleteAll()
+        productCollection.deleteAll()
     }
 
     private fun printAllWhereQuantityIsLessThanOrEqualTo(lessThan: Int) {
         val whereExpression = Expression.property("attributes.quantity").lessThanOrEqualTo(Expression.intValue(lessThan))
-        val productList = productDatabase.fetchAll<Product>(whereExpression = whereExpression)
+        val productList = productCollection.fetchAll<Product>(whereExpression = whereExpression)
         printList(productList)
     }
 
     private fun printAllSortedByQuantityDescending() {
         val orderBy = arrayOf(Ordering.property("attributes.quantity").descending())
-        val productList = productDatabase.fetchAll<Product>(orderedBy = orderBy)
+        val productList = productCollection.fetchAll<Product>(orderedBy = orderBy)
         printList(productList)
     }
 
     private fun printAllSortedByQuantityAscending() {
         val orderBy = arrayOf(Ordering.property("attributes.quantity").ascending())
-        val productList = productDatabase.fetchAll<Product>(orderedBy = orderBy)
+        val productList = productCollection.fetchAll<Product>(orderedBy = orderBy)
         printList(productList)
     }
 
     private fun printAllProducts() {
-        val productList = productDatabase.fetchAll<Product>()
+        val productList = productCollection.fetchAll<Product>()
         printList(productList)
     }
 
