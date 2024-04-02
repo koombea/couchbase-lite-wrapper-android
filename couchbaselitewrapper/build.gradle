@@ -44,7 +44,7 @@ dependencies {
 
 ext {
     PUBLISH_GROUP_ID = 'io.github.koombea'
-    PUBLISH_VERSION = '1.0.0'
+    PUBLISH_VERSION = '2.0.0'
     PUBLISH_ARTIFACT_ID = 'couchbaselitewrapper'
     PUBLISH_DESCRIPTION = 'Wrapper to ease Couchbase Lite usage in Android'
     PUBLISH_URL = 'https://github.com/koombea/couchbase-lite-wrapper-android'
