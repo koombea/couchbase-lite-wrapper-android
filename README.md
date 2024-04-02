@@ -1,6 +1,6 @@
 # couchbase-wrapper-android
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 **Couchbase Lite Wrapper** is a library written in Kotlin that makes it easy for you to implement database CRUD operations with [Couchbase Lite for Android](https://github.com/couchbase/couchbase-lite-android)
 
@@ -15,13 +15,13 @@ allprojects {
     repositories {
         mavenCentral()
     }
-}   
+}
 
 ```
 Then add the dependency with:
 ```groovy
 dependencies {
-    implementation 'io.github.koombea:couchbaselitewrapper:1.0.0'
+    implementation 'io.github.koombea:couchbaselitewrapper:2.0.0'
 }
 
 ```
@@ -30,18 +30,26 @@ dependencies {
 
 ### Setup
 
-Create a couchbase database for each of the models you want to store
+Create a couchbase database for each of the collection you want to store
 
 ```kotlin
 val couchbaseDatabase = CouchbaseDatabase(context = context, databaseName = "User")
 
 ```
+
+Create a couchBaseCollection in order to store documents on it
+
+```kotlin
+val couchbaseDatabase = CouchbaseDatabase(context = context, databaseName = "User")
+val couchBaseCollection = couchbaseDatabase.createCollection("user") 
+```
+
 ### Create / Update document
 
 ```kotlin 
 val user = User(name = "Brad", lastname = "Depp")
 val document = CouchbaseDocument(id = "1", attributes = user)
-couchbaseDatabase.save(document)
+couchBaseCollection.save(document)
 
 ```
 
@@ -49,7 +57,7 @@ couchbaseDatabase.save(document)
 
 ```kotlin
 val expression = Expression.property("attributes.name").equalTo(Expression.string("Brad"))
-val documents = couchbaseDatabase.fetchAll<User>(whereExpression = expression)
+val documents = couchBaseCollection.fetchAll<User>(whereExpression = expression)
 
 ```
 
@@ -57,6 +65,6 @@ val documents = couchbaseDatabase.fetchAll<User>(whereExpression = expression)
 
 ```kotlin
 val expression = Expression.property("attributes.name").equalTo(Expression.string("Brad"))
-couchbaseDatabase.deleteAll(whereExpression = expression)
+couchBaseCollection.deleteAll(whereExpression = expression)
 
 ```
