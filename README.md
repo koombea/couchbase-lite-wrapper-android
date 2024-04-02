@@ -5,7 +5,7 @@
 **Couchbase Lite Wrapper** is a library written in Kotlin that makes it easy for you to implement database CRUD operations with [Couchbase Lite for Android](https://github.com/couchbase/couchbase-lite-android)
 
 ## Requirements
-- Api 21+
+- Api 22+
 
 ## Installation
 
