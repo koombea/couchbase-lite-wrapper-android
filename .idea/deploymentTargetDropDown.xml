@@ -27,12 +27,6 @@
       <entry key="createACollectionSuccessfully()">
         <State />
       </entry>
-      <entry key="deleteACollectionSuccessfully()">
-        <State />
-      </entry>
-      <entry key="whenCreateIndexWithTheWordIndexThrowsAnException()">
-        <State />
-      </entry>
     </value>
   </component>
 </project>
