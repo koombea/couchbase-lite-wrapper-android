@@ -54,9 +54,9 @@ class CouchbaseCollection(
                 setValue(document.id, data)
             }
             collection.save(MutableDocument(document.id, data))
-       } catch (e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
-       }
+        }
     }
 
     /**
@@ -97,7 +97,7 @@ class CouchbaseCollection(
      * @param orderedBy array of Ordering objects, which are useful to sort the retrieved data
      * @return list of generic object
      */
-   inline fun <reified T> fetchAll(
+    inline fun <reified T> fetchAll(
         whereExpression: Expression? = null,
         orderedBy: Array<Ordering>? = null
     ): List<T> {
