@@ -11,19 +11,19 @@
 
 Make sure you have the Maven Central repository in root build.gradle:
 ```groovy
-allprojects {
-    repositories {
-        mavenCentral()
-    }
+dependencyResolutionManagement {
+		repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+		repositories {
+			mavenCentral()
+			maven { url 'https://jitpack.io' }
+		}
 }
-
 ```
 Then add the dependency with:
 ```groovy
 dependencies {
-    implementation 'io.github.koombea:couchbaselitewrapper:2.0.0'
-}
-
+	        implementation 'com.github.koombea:couchbase-lite-wrapper-android:2.0.4'
+	}
 ```
 
 ## The Basics
